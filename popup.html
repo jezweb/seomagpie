@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEO Magpie</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans leading-normal p-4">
+  <main class="max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+    <div class="p-4">
+      <h1 class="text-2xl font-bold text-center mb-4">SEO Analyzer</h1>
+
+      <nav>
+        <ul class="flex justify-around text-sm font-medium text-gray-600 border-b" role="tablist">
+          <li role="presentation">
+            <button id="summary-tab" class="pb-2 px-4 text-blue-600 border-b-2 border-blue-600" role="tab" aria-selected="true" aria-controls="summary-content">Summary</button>
+          </li>
+          <li role="presentation">
+            <button id="headers-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="headers-content">Headers</button>
+          </li>
+          <li role="presentation">
+            <button id="images-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="images-content">Images</button>
+          </li>
+          <li role="presentation">
+            <button id="links-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="links-content">Links</button>
+          </li>
+          <li role="presentation">
+            <button id="social-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="social-content">Social</button>
+          </li>
+          <li role="presentation">
+            <button id="tools-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="tools-content">Tools</button>
+          </li>
+        </ul>
+      </nav>
+
+      <div id="tab-content" class="mt-4 space-y-4">
+        <section id="summary-content" role="tabpanel" aria-labelledby="summary-tab">
+          <h2 class="text-xl font-semibold mb-4">Page Summary</h2>
+          <!-- Summary content -->
+          <dl class="space-y-2">
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The title of the page, which appears in the browser tab and is crucial for SEO.">Title:</dt>
+              <dd class="inline" id="page-title">Loading...</dd>
+              <p class="text-gray-500 text-sm"><span id="title-length" class="text-red-500">0 characters</span></p>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The description meta tag, providing a brief summary of the page's content.">Description:</dt>
+              <dd class="inline" id="page-description">Loading...</dd>
+              <p class="text-gray-500 text-sm"><span id="description-length" class="text-green-500">0 characters</span></p>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="Keywords meta tag is used for SEO, although not as relevant as it once was.">Keywords:</dt>
+              <dd class="inline" id="page-keywords">Keywords are missing!</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The URL of the page, which should be clean and descriptive for SEO purposes.">URL:</dt>
+              <dd class="inline" id="page-url">Loading...</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The canonical URL helps prevent duplicate content issues by specifying the preferred URL.">Canonical:</dt>
+              <dd class="inline" id="page-canonical">Loading...</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The robots meta tag provides search engine robots with indexing instructions.">Robots Tag:</dt>
+              <dd class="inline" id="page-robots">Loading...</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The author meta tag specifies the author of the webpage.">Author:</dt>
+              <dd class="inline" id="page-author">Author is missing.</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The publisher meta tag specifies the publisher of the webpage.">Publisher:</dt>
+              <dd class="inline" id="page-publisher">Publisher is missing.</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-900 inline" title="The language of the webpage, specified using the 'lang' attribute in the HTML tag.">Language:</dt>
+              <dd class="inline" id="page-lang">Loading...</dd>
+            </div>
+            <div id="meta-tags-summary" class="mt-4"></div>
+            <div id="page-speed-summary" class="mt-4"></div>
+          </dl>
+        </section>
+
+        <section id="headers-content" class="hidden" role="tabpanel" aria-labelledby="headers-tab">
+          <h2 class="text-2xl font-bold mb-6">Content Hierarchy</h2>
+          <div id="headers-list" class="h-96 overflow-y-auto rounded-md p-4 space-y-4"></div>
+        </section>
+
+        <section id="images-content" class="hidden" role="tabpanel" aria-labelledby="images-tab">
+          <h2 class="text-xl font-semibold">Images</h2>
+          <p><span id="total-images">Loading...</span></p>
+          <p><span id="images-without-alt">Loading...</span></p>
+          <p><span id="images-without-title">Loading...</span></p>
+          <div class="mb-4">
+            <label for="image-filter" class="block text-sm font-medium text-gray-700">Filter Images:</label>
+            <select id="image-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              <option value="all">All Images</option>
+              <option value="withoutAlt">Without ALT</option>
+              <option value="withoutTitle">Without TITLE</option>
+              <option value="withoutSize">Without Size</option>
+              <option value="loadingEager">Loading Eager</option>
+              <option value="loadingLazy">Loading Lazy</option>
+              <option value="nextGenFormat">Next-Gen Format</option>
+            </select>
+          </div>
+          <div id="image-list" class="space-y-2">
+            <p class="text-gray-600">Loading images...</p>
+          </div>
+        </section>
+
+        <section id="links-content" class="hidden" role="tabpanel" aria-labelledby="links-tab">
+          <h2 class="text-xl font-semibold">Links</h2>
+          <p><span id="total-links">Loading...</span></p>
+          <p><span id="unique-links">Loading...</span></p>
+          <p><span id="links-without-title">Loading...</span></p>
+          <div id="link-list" class="space-y-2">
+            <p class="text-gray-600">Loading links...</p>
+          </div>
+        </section>
+
+        <section id="social-content" class="hidden" role="tabpanel" aria-labelledby="social-tab">
+          <h2 class="text-xl font-semibold mb-4">Social Metadata</h2>
+          <div id="social-list" class="space-y-6">
+            <p class="text-gray-600">Loading social metadata...</p>
+          </div>
+        </section>
+
+        <section id="tools-content" class="hidden" role="tabpanel" aria-labelledby="tools-tab">
+          <h2 class="text-xl font-semibold">SEO Tools</h2>
+          <div id="tools-list" class="space-y-2">
+            <p class="text-gray-600">Loading tools...</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
