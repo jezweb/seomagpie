@@ -1,140 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SEO Magpie</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-50 text-gray-900 font-sans leading-normal p-4">
-  <main class="max-w-lg mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-    <div class="p-4">
-      <h1 class="text-2xl font-bold text-center mb-4">SEO Analyzer</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SEO Magpie</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        min-width: 400px;
+        max-width: 600px;
+        font-family: "Inter", sans-serif;
+      }
+      .tab-active {
+        color: #4c51bf;
+        border-bottom-width: 2px;
+        border-color: #4c51bf;
+      }
 
-      <nav>
-        <ul class="flex justify-around text-sm font-medium text-gray-600 border-b" role="tablist">
+      .issue-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .issue-item.error {
+        background-color: #fef2f2;
+        color: #c53030;
+      }
+
+      .issue-item.warning {
+        background-color: #fefce8;
+        color: #946d21;
+      }
+
+      .issue-icon {
+        margin-right: 0.75rem;
+      }
+
+      .issue-message {
+        flex-grow: 1;
+      }
+
+      .issue-type {
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+
+      .issue-item.error .issue-type {
+        background-color: #fee2e2;
+      }
+
+      .issue-item.warning .issue-type {
+        background-color: #fef3c7;
+      }
+
+      .no-issues {
+        text-align: center;
+        padding: 1rem 0;
+        color: #38a169;
+        font-weight: 500;
+      }
+      .card-good {
+        color: #38a169;
+        background-color: #f0fdf4;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 1rem;
+        text-transform: capitalize;
+      }
+      .card-warning {
+        color: #d69e2e;
+        background-color: #fefcbf;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 1rem;
+        text-transform: capitalize;
+      }
+      .card-error {
+        color: #c53030;
+        background-color: #fee2e2;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        font-size: 1rem;
+        text-transform: capitalize;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50">
+    <main class="min-h-screen">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-200 px-6 py-4">
+        <div class="flex items-center">
+          <div class="flex items-center space-x-2">
+            <svg
+              class="w-8 h-8 text-indigo-600"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
+              />
+            </svg>
+            <h1 class="text-xl font-bold text-gray-900">SEO Magpie</h1>
+          </div>
+        </div>
+      </header>
+
+      <!-- Navigation -->
+      <nav class="bg-white px-6 border-b border-gray-200">
+        <ul class="flex space-x-6 -mb-px" role="tablist">
           <li role="presentation">
-            <button id="summary-tab" class="pb-2 px-4 text-blue-600 border-b-2 border-blue-600" role="tab" aria-selected="true" aria-controls="summary-content">Summary</button>
+            <button
+              id="summary-tab"
+              class="px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 focus:text-indigo-600 focus:border-indigo-600"
+              role="tab"
+              aria-selected="true"
+              aria-controls="summary-content"
+            >
+              Overview
+            </button>
           </li>
           <li role="presentation">
-            <button id="headers-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="headers-content">Headers</button>
+            <button
+              id="headers-tab"
+              class="px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 focus:text-indigo-600 focus:border-indigo-600"
+              role="tab"
+              aria-selected="false"
+              aria-controls="headers-content"
+            >
+              Headers
+            </button>
           </li>
           <li role="presentation">
-            <button id="images-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="images-content">Images</button>
+            <button
+              id="images-tab"
+              class="px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 focus:text-indigo-600 focus:border-indigo-600"
+              role="tab"
+              aria-selected="false"
+              aria-controls="images-content"
+            >
+              Images
+            </button>
           </li>
           <li role="presentation">
-            <button id="links-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="links-content">Links</button>
+            <button
+              id="links-tab"
+              class="px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 focus:text-indigo-600 focus:border-indigo-600"
+              role="tab"
+              aria-selected="false"
+              aria-controls="links-content"
+            >
+              Links
+            </button>
           </li>
           <li role="presentation">
-            <button id="social-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="social-content">Social</button>
+            <button
+              id="social-tab"
+              class="px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 focus:text-indigo-600 focus:border-indigo-600"
+              role="tab"
+              aria-selected="false"
+              aria-controls="social-content"
+            >
+              Social
+            </button>
           </li>
           <li role="presentation">
-            <button id="tools-tab" class="pb-2 px-4 hover:text-blue-600" role="tab" aria-selected="false" aria-controls="tools-content">Tools</button>
+            <button
+              id="tools-tab"
+              class="px-1 py-4 text-sm font-medium text-gray-500 hover:text-gray-700 border-b-2 border-transparent hover:border-gray-300 focus:text-indigo-600 focus:border-indigo-600"
+              role="tab"
+              aria-selected="false"
+              aria-controls="tools-content"
+            >
+              Tools
+            </button>
           </li>
         </ul>
       </nav>
 
-      <div id="tab-content" class="mt-4 space-y-4">
-        <section id="summary-content" role="tabpanel" aria-labelledby="summary-tab">
-          <h2 class="text-xl font-semibold mb-4">Page Summary</h2>
-          <!-- Summary content -->
-          <dl class="space-y-2">
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The title of the page, which appears in the browser tab and is crucial for SEO.">Title:</dt>
-              <dd class="inline" id="page-title">Loading...</dd>
-              <p class="text-gray-500 text-sm"><span id="title-length" class="text-red-500">0 characters</span></p>
+      <!-- Content -->
+      <div id="tab-content" class="p-6 space-y-6">
+        <!-- Summary Tab -->
+        <section
+          id="summary-content"
+          role="tabpanel"
+          aria-labelledby="summary-tab"
+        >
+          <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="card-good metric-card">
+              <h3 class="text-sm font-medium">SEO Score</h3>
+              <div class="mt-2 flex items-baseline">
+                <p class="text-2xl font-semibold" id="seo-score">0</p>
+                <p class="ml-2 text-sm font-medium">/100</p>
+              </div>
             </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The description meta tag, providing a brief summary of the page's content.">Description:</dt>
-              <dd class="inline" id="page-description">Loading...</dd>
-              <p class="text-gray-500 text-sm"><span id="description-length" class="text-green-500">0 characters</span></p>
+            <div class="card-warning metric-card">
+              <h3 class="text-sm font-medium">Issues Found</h3>
+              <p class="mt-2 text-2xl font-semibold" id="issues-count">0</p>
             </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="Keywords meta tag is used for SEO, although not as relevant as it once was.">Keywords:</dt>
-              <dd class="inline" id="page-keywords">Keywords are missing!</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The URL of the page, which should be clean and descriptive for SEO purposes.">URL:</dt>
-              <dd class="inline" id="page-url">Loading...</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The canonical URL helps prevent duplicate content issues by specifying the preferred URL.">Canonical:</dt>
-              <dd class="inline" id="page-canonical">Loading...</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The robots meta tag provides search engine robots with indexing instructions.">Robots Tag:</dt>
-              <dd class="inline" id="page-robots">Loading...</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The author meta tag specifies the author of the webpage.">Author:</dt>
-              <dd class="inline" id="page-author">Author is missing.</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The publisher meta tag specifies the publisher of the webpage.">Publisher:</dt>
-              <dd class="inline" id="page-publisher">Publisher is missing.</dd>
-            </div>
-            <div>
-              <dt class="font-semibold text-gray-900 inline" title="The language of the webpage, specified using the 'lang' attribute in the HTML tag.">Language:</dt>
-              <dd class="inline" id="page-lang">Loading...</dd>
-            </div>
-            <div id="meta-tags-summary" class="mt-4"></div>
-            <div id="page-speed-summary" class="mt-4"></div>
-          </dl>
-        </section>
-
-        <section id="headers-content" class="hidden" role="tabpanel" aria-labelledby="headers-tab">
-          <h2 class="text-2xl font-bold mb-6">Content Hierarchy</h2>
-          <div id="headers-list" class="h-96 overflow-y-auto rounded-md p-4 space-y-4"></div>
-        </section>
-
-        <section id="images-content" class="hidden" role="tabpanel" aria-labelledby="images-tab">
-          <h2 class="text-xl font-semibold">Images</h2>
-          <p><span id="total-images">Loading...</span></p>
-          <p><span id="images-without-alt">Loading...</span></p>
-          <p><span id="images-without-title">Loading...</span></p>
-          <div class="mb-4">
-            <label for="image-filter" class="block text-sm font-medium text-gray-700">Filter Images:</label>
-            <select id="image-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-              <option value="all">All Images</option>
-              <option value="withoutAlt">Without ALT</option>
-              <option value="withoutTitle">Without TITLE</option>
-              <option value="withoutSize">Without Size</option>
-              <option value="loadingEager">Loading Eager</option>
-              <option value="loadingLazy">Loading Lazy</option>
-              <option value="nextGenFormat">Next-Gen Format</option>
-            </select>
           </div>
-          <div id="image-list" class="space-y-2">
-            <p class="text-gray-600">Loading images...</p>
+
+          <!-- Issues Section -->
+          <div class="metric-card">
+            <div class="p-4">
+              <h3 class="text-sm font-medium text-gray-900 mb-4">
+                Issues Found
+              </h3>
+              <div id="issues-list" class="space-y-2"></div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Page Title Section -->
+            <div class="status-good metric-card">
+              <div class="p-4">
+                <h3 class="text-sm font-medium text-gray-900">Page Title</h3>
+                <p class="mt-1 text-sm text-gray-600" id="page-title">
+                  Loading...
+                </p>
+                <div class="mt-2 flex items-center">
+                  <div class="flex-1 h-2 bg-gray-100 rounded-full">
+                    <div
+                      class="h-2 bg-green-500 rounded-full"
+                      style="width: 70%"
+                      id="title-progress"
+                    ></div>
+                  </div>
+                  <span class="ml-3 text-sm text-gray-500" id="title-length"
+                    >0 characters</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Meta Description Section -->
+            <div class="status-good metric-card">
+              <div class="p-4">
+                <h3 class="text-sm font-medium text-gray-900">
+                  Meta Description
+                </h3>
+                <p class="mt-1 text-sm text-gray-600" id="page-description">
+                  Loading...
+                </p>
+                <div class="mt-2 flex items-center">
+                  <div class="flex-1 h-2 bg-gray-100 rounded-full">
+                    <div
+                      class="h-2 bg-green-500 rounded-full"
+                      style="width: 60%"
+                      id="description-progress"
+                    ></div>
+                  </div>
+                  <span
+                    class="ml-3 text-sm text-gray-500"
+                    id="description-length"
+                    >0 characters</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Meta Information Section -->
+            <div class="status-good metric-card">
+              <div class="p-4">
+                <h3 class="text-sm font-medium text-gray-900">
+                  Meta Information
+                </h3>
+                <dl class="mt-2 divide-y divide-gray-200">
+                  <div
+                    class="py-3 flex justify-between bg-blue-50 text-blue-700 border-blue-200 rounded-t-lg px-3"
+                  >
+                    <dt class="text-sm">Keywords</dt>
+                    <dd class="text-sm font-medium" id="page-keywords">
+                      Not found
+                    </dd>
+                  </div>
+                  <div
+                    class="py-3 flex justify-between bg-green-50 text-green-700 border-green-200 px-3"
+                  >
+                    <dt class="text-sm">Canonical URL</dt>
+                    <dd class="text-sm font-medium" id="page-canonical">
+                      Loading...
+                    </dd>
+                  </div>
+                  <div
+                    class="py-3 flex justify-between bg-yellow-50 text-yellow-700 border-yellow-200 px-3"
+                  >
+                    <dt class="text-sm">Robots</dt>
+                    <dd class="text-sm font-medium" id="page-robots">
+                      Loading...
+                    </dd>
+                  </div>
+                  <div
+                    class="py-3 flex justify-between bg-red-50 text-red-700 border-red-200 rounded-b-lg px-3"
+                  >
+                    <dt class="text-sm">Language</dt>
+                    <dd class="text-sm font-medium" id="page-lang">
+                      Loading...
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section id="links-content" class="hidden" role="tabpanel" aria-labelledby="links-tab">
-          <h2 class="text-xl font-semibold">Links</h2>
-          <p><span id="total-links">Loading...</span></p>
-          <p><span id="unique-links">Loading...</span></p>
-          <p><span id="links-without-title">Loading...</span></p>
-          <div id="link-list" class="space-y-2">
-            <p class="text-gray-600">Loading links...</p>
+        <!-- Headers Tab -->
+        <section
+          id="headers-content"
+          class="hidden"
+          role="tabpanel"
+          aria-labelledby="headers-tab"
+        >
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-4">
+              <h2 class="text-lg font-medium text-gray-900">
+                Content Hierarchy
+              </h2>
+              <div id="headers-list" class="mt-4 space-y-4"></div>
+            </div>
           </div>
         </section>
 
-        <section id="social-content" class="hidden" role="tabpanel" aria-labelledby="social-tab">
-          <h2 class="text-xl font-semibold mb-4">Social Metadata</h2>
-          <div id="social-list" class="space-y-6">
-            <p class="text-gray-600">Loading social metadata...</p>
+        <!-- Images Tab -->
+        <section
+          id="images-content"
+          class="hidden"
+          role="tabpanel"
+          aria-labelledby="images-tab"
+        >
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-medium text-gray-900">Images</h2>
+                <select
+                  id="image-filter"
+                  class="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                >
+                  <option value="all">All Images</option>
+                  <option value="withoutAlt">Missing Alt Text</option>
+                  <option value="withoutTitle">Missing Title</option>
+                  <option value="withoutSize">Missing Dimensions</option>
+                  <option value="loadingEager">Loading Eager</option>
+                  <option value="loadingLazy">Loading Lazy</option>
+                  <option value="nextGenFormat">Next-Gen Format</option>
+                </select>
+              </div>
+              <div id="image-list" class="space-y-4"></div>
+            </div>
           </div>
         </section>
 
-        <section id="tools-content" class="hidden" role="tabpanel" aria-labelledby="tools-tab">
-          <h2 class="text-xl font-semibold">SEO Tools</h2>
-          <div id="tools-list" class="space-y-2">
-            <p class="text-gray-600">Loading tools...</p>
+        <!-- Links Tab -->
+        <section
+          id="links-content"
+          class="hidden"
+          role="tabpanel"
+          aria-labelledby="links-tab"
+        >
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-4">
+              <h2 class="text-lg font-medium text-gray-900">Links Analysis</h2>
+              <div id="link-list" class="mt-4 space-y-4"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Social Tab -->
+        <section
+          id="social-content"
+          class="hidden"
+          role="tabpanel"
+          aria-labelledby="social-tab"
+        >
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-4">
+              <h2 class="text-lg font-medium text-gray-900">
+                Social Media Tags
+              </h2>
+              <div id="social-list" class="mt-4 space-y-4"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tools Tab -->
+        <section
+          id="tools-content"
+          class="hidden"
+          role="tabpanel"
+          aria-labelledby="tools-tab"
+        >
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+            <div class="p-4">
+              <h2 class="text-lg font-medium text-gray-900">SEO Tools</h2>
+              <div id="tools-list" class="mt-4 space-y-4"></div>
+            </div>
           </div>
         </section>
       </div>
-    </div>
-  </main>
-  <script type="module" src="popup.js"></script>
-</body>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
 </html>
